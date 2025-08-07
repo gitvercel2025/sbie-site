@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Search, User, BookOpen, MessageCircle, Phone } from 'lucide-react';
+import { Menu, X, Search, ChevronDown } from 'lucide-react';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,44 +15,100 @@ const Navbar = () => {
   }, []);
 
   const menuItems = [
-    { name: 'Início', href: '#home', icon: User },
-    { name: 'Sobre Rodrigo', href: '#about', icon: User },
-    { name: 'Treinamentos', href: '#training', icon: BookOpen },
-    { name: 'Blog', href: '#blog', icon: MessageCircle },
-    { name: 'Contato', href: '#contact', icon: Phone },
+    {
+      name: 'QUEM SOMOS',
+      href: '#about',
+      submenu: [
+        { name: 'Conheça a SBIE', href: '#sbie' },
+        { name: 'Nossa Metodologia', href: '#metodologia' },
+        { name: 'Rodrigo Fonseca', href: '#rodrigo' }
+      ]
+    },
+    {
+      name: 'TREINAMENTOS',
+      href: '#training',
+      submenu: [
+        { name: 'Lotus Inteligência Emocional', href: '#lotus-ie' },
+        { name: 'Lotus Legado', href: '#lotus-legado' },
+        { name: 'Formação em Inteligência Emocional', href: '#formacao-ie' },
+        { name: 'Formação Master em Inteligência Emocional', href: '#formacao-master' },
+        { name: 'SBIE Business', href: '#sbie-business' },
+        { name: 'Embaixadores do Bem', href: '#embaixadores' }
+      ]
+    },
+    {
+      name: 'ONLINE',
+      href: '#online',
+      submenu: [
+        { name: 'SBIE Academy', href: '#academy' },
+        { name: 'SBIE Care', href: '#care' },
+        { name: 'Academia Emocional', href: '#academia-emocional' },
+        { name: 'Gerando com Amor', href: '#gerando-amor' },
+        { name: 'Almas Gêmeas', href: '#almas-gemeas' },
+        { name: 'Livros Digitais', href: '#livros-digitais' }
+      ]
+    },
+    { name: 'BLOG', href: '#blog' },
+    { name: 'IMPRENSA', href: '#imprensa' },
+    { name: 'STORE', href: '#store' },
+    { name: 'CONTATO', href: '#contact' }
   ];
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       scrolled 
-        ? 'backdrop-blur-xl bg-[#21302B]/80 shadow-2xl border-b border-[#B66D38]/30' 
-        : 'backdrop-blur-md bg-[#21302B]/20'
+        ? 'backdrop-blur-xl bg-white/90 shadow-2xl border-b border-[#B66D38]/20' 
+        : 'backdrop-blur-md bg-white/70'
     }`}>
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="relative group">
             <div className="absolute -inset-2 bg-gradient-to-r from-[#B66D38] to-[#DFC6AA] rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-            <div className="relative bg-[#21302B]/90 backdrop-blur-sm px-6 py-3 rounded-lg border border-[#B66D38]/30">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-[#DFC6AA] to-[#B66D38] bg-clip-text text-transparent">
-                SBIE
-              </h1>
-              <p className="text-xs text-[#889073] -mt-1">Inteligência Emocional</p>
+            <div className="relative bg-white/90 backdrop-blur-sm px-6 py-3 rounded-lg border border-[#B66D38]/30 shadow-lg">
+              <img 
+                src="/image.png" 
+                alt="SBIE Logo" 
+                className="h-8 w-auto"
+              />
             </div>
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6">
             {menuItems.map((item, index) => (
-              <a
+              <div
                 key={index}
-                href={item.href}
-                className="relative group px-4 py-2 text-[#DFC6AA] hover:text-white transition-all duration-300"
+                className="relative group"
+                onMouseEnter={() => setActiveDropdown(item.submenu ? item.name : null)}
+                onMouseLeave={() => setActiveDropdown(null)}
               >
-                <span className="relative z-10">{item.name}</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-[#B66D38] to-[#4F5948] rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-0 group-hover:scale-100"></div>
-                <div className="absolute inset-0 bg-[#B66D38] rounded-lg blur opacity-0 group-hover:opacity-50 transition-all duration-300"></div>
-              </a>
+                <a
+                  href={item.href}
+                  className="relative group px-4 py-2 text-[#21302B] hover:text-[#B66D38] transition-all duration-300 font-medium text-sm flex items-center space-x-1"
+                >
+                  <span className="relative z-10">{item.name}</span>
+                  {item.submenu && <ChevronDown className="w-4 h-4" />}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#B66D38]/10 to-[#DFC6AA]/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-0 group-hover:scale-100"></div>
+                </a>
+
+                {/* Dropdown Menu */}
+                {item.submenu && activeDropdown === item.name && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white/95 backdrop-blur-xl border border-[#B66D38]/20 rounded-2xl shadow-2xl overflow-hidden">
+                    <div className="py-2">
+                      {item.submenu.map((subItem, subIndex) => (
+                        <a
+                          key={subIndex}
+                          href={subItem.href}
+                          className="block px-6 py-3 text-[#21302B] hover:text-[#B66D38] hover:bg-[#DFC6AA]/10 transition-all duration-300 text-sm"
+                        >
+                          {subItem.name}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
 
@@ -62,7 +119,7 @@ const Navbar = () => {
               <input
                 type="text"
                 placeholder="Buscar..."
-                className="bg-[#21302B]/50 backdrop-blur-sm border border-[#4F5948]/50 rounded-full pl-10 pr-4 py-2 text-[#DFC6AA] placeholder-[#889073] focus:outline-none focus:border-[#B66D38] focus:ring-2 focus:ring-[#B66D38]/30 transition-all duration-300"
+                className="bg-white/50 backdrop-blur-sm border border-[#DFC6AA]/50 rounded-full pl-10 pr-4 py-2 text-[#21302B] placeholder-[#889073] focus:outline-none focus:border-[#B66D38] focus:ring-2 focus:ring-[#B66D38]/30 transition-all duration-300"
               />
             </div>
           </div>
@@ -75,9 +132,9 @@ const Navbar = () => {
             <div className="absolute inset-0 bg-[#B66D38] rounded-lg blur opacity-0 group-hover:opacity-50 transition-all duration-300"></div>
             <div className="relative">
               {isMenuOpen ? (
-                <X className="w-6 h-6 text-[#DFC6AA]" />
+                <X className="w-6 h-6 text-[#21302B]" />
               ) : (
-                <Menu className="w-6 h-6 text-[#DFC6AA]" />
+                <Menu className="w-6 h-6 text-[#21302B]" />
               )}
             </div>
           </button>
@@ -89,15 +146,16 @@ const Navbar = () => {
         }`}>
           <div className="pt-4 pb-2 space-y-2">
             {menuItems.map((item, index) => (
-              <a
-                key={index}
-                href={item.href}
-                className="flex items-center space-x-3 px-4 py-3 text-[#DFC6AA] hover:text-white bg-[#21302B]/30 backdrop-blur-sm rounded-lg border border-[#4F5948]/30 hover:border-[#B66D38]/50 transition-all duration-300"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <item.icon className="w-5 h-5" />
-                <span>{item.name}</span>
-              </a>
+              <div key={index}>
+                <a
+                  href={item.href}
+                  className="flex items-center justify-between px-4 py-3 text-[#21302B] hover:text-[#B66D38] bg-white/30 backdrop-blur-sm rounded-lg border border-[#DFC6AA]/30 hover:border-[#B66D38]/50 transition-all duration-300"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span>{item.name}</span>
+                  {item.submenu && <ChevronDown className="w-4 h-4" />}
+                </a>
+              </div>
             ))}
           </div>
         </div>
